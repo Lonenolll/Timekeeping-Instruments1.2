@@ -1,0 +1,128 @@
+<%- include('partials/header') %>
+
+<%
+  const imageList = Array.isArray(images) ? images : [];
+  const imageTools = Array.isArray(tools) ? tools : [];
+  const currentSelectedToolId = typeof selectedToolId !== 'undefined' ? String(selectedToolId) : '';
+  const selectedToolMeta = typeof selectedToolMeta !== 'undefined' && selectedToolMeta
+    ? selectedToolMeta
+    : null;
+
+  const normalizedImageTools = imageTools.map((tool) => ({
+    id: String(tool.id),
+    nameZh: tool.name_zh || tool.nameZh || tool.nameCn || '未命名器物',
+    category: tool.category || ''
+  }));
+
+  const getToolImageById = (toolId) => {
+    const map = {
+      1: '/images/tools/sundial-cover.svg',
+      2: '/images/tools/bronze-clepsydra-cover.svg',
+      3: '/images/tools/water-clock-cover.svg',
+      4: '/images/tools/gnomon-cover.svg',
+      5: '/images/tools/astronomical-clock-tower-cover.svg',
+      6: '/images/tools/incense-clock-cover.svg',
+      7: '/images/tools/fire-clock-cover.svg',
+      8: '/images/tools/night-watch-drum-cover.svg',
+      9: '/images/tools/armillary-sphere-cover.svg',
+      10: '/images/tools/astronomical-clock-cover.svg'
+    };
+    return map[Number(toolId)] || '/images/site/tool-detail-placeholder.svg';
+  };
+
+  const findImageToolName = (toolId) => {
+    const matchedTool = normalizedImageTools.find((tool) => tool.id === String(toolId));
+    return matchedTool ? matchedTool.nameZh : '未关联器物';
+  };
+%>
+
+<section class="media-page media-page--images" aria-labelledby="images-page-title">
+  <header class="media-page__hero">
+    <p class="media-page__eyebrow">图像资源</p>
+    <h2 id="images-page-title" class="media-page__title">中国古代计时工具相关图片资源</h2>
+    <p class="media-page__subtitle">
+      <% if (selectedToolMeta) { %>
+        当前器物：<strong><%= selectedToolMeta.name_zh || '计时工具' %></strong>
+        <% if (selectedToolMeta.category) { %>（<%= selectedToolMeta.category %>）<% } %>
+        — 下列条目按「实拍图 → 结构说明图 → 模型复原图 → 馆藏与展览 → 新闻报道配图」排序；点击按钮可在<strong>原发布平台</strong>查看配图与版权声明。
+      <% } else { %>
+        按器物<strong>种类</strong>（<%= imageList.length ? '工具分类、器物名称' : '筛选后' %>）与图片类型浏览；每条索引指向央视网、人民日报、新华社、人民网、百度百科等公开页面，便于查看实拍与结构说明图。
+      <% } %>
+    </p>
+  </header>
+
+  <section class="media-filter" aria-labelledby="images-filter-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">检索筛选</p>
+      <h3 id="images-filter-title" class="section-heading__title">按计时工具浏览图像</h3>
+    </div>
+
+    <form class="filter-form" action="/images" method="get">
+      <div class="filter-form__group">
+        <label for="image-tool-filter">计时工具</label>
+        <select id="image-tool-filter" name="toolId">
+          <option value="">全部工具</option>
+          <% normalizedImageTools.forEach((tool) => { %>
+            <option value="<%= tool.id %>" <%= currentSelectedToolId === tool.id ? 'selected' : '' %>>
+              <%= tool.nameZh %><%= tool.category ? '（' + tool.category + '）' : '' %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <button class="button button--primary" type="submit">应用筛选</button>
+    </form>
+  </section>
+
+  <section class="image-flow" aria-label="图片资源列表">
+    <% if (imageList.length) { %>
+      <div class="image-official-list">
+        <% imageList.forEach((image) => { %>
+          <%
+            const imageToolId = image.timing_tool_id || image.timingToolId || image.toolId;
+            const imageToolName = image.tool_name_zh || image.toolNameZh || findImageToolName(imageToolId);
+            const imageSrc = image.image_url || getToolImageById(imageToolId);
+            const kindLabel = image.image_kind || '其他';
+            const officialUrl = image.official_page_url || '';
+          %>
+          <article class="image-official-card">
+            <div class="image-official-card__thumb">
+              <img src="<%= imageSrc %>" alt="<%= image.title || imageToolName || '器物' %>" class="image-official-card__img">
+            </div>
+            <div class="image-official-card__body">
+              <span class="image-official-card__kind"><%= kindLabel %></span>
+              <h3 class="image-official-card__title"><%= image.title || '图片资源' %></h3>
+              <p class="image-official-card__meta"><%= imageToolName %> · <%= image.source || '来源待补充' %></p>
+              <p class="image-official-card__text"><%= image.caption || image.description || '索引说明。' %></p>
+              <% if (officialUrl) { %>
+                <a
+                  class="button button--primary image-official-card__cta"
+                  href="<%= officialUrl %>"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >打开官方媒体页面查看配图</a>
+              <% } else { %>
+                <p class="image-official-card__note">该条目尚未配置外链，请稍后在数据库中补充 official_page_url。</p>
+              <% } %>
+              <% if (image.copyright_note) { %>
+                <p class="image-official-card__legal"><%= image.copyright_note %></p>
+              <% } %>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="tool-detail-panel">
+        <p>当前筛选条件下暂无图片资源，后续可继续补充器物图像、结构图、博物馆藏品图等内容。</p>
+      </div>
+    <% } %>
+  </section>
+
+  <footer class="copyright-note">
+    <p>
+      本站仅提供指向主流媒体与百科等公开网页的链接索引，不镜像托管其配图文件。教学与传播请务必在原站核对版权、署名与转载要求。
+    </p>
+  </footer>
+</section>
+
+<%- include('partials/footer') %>

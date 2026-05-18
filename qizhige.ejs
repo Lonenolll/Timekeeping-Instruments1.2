@@ -1,0 +1,181 @@
+<%- include('partials/header') %>
+
+<%
+  const qizhigeVideos = Array.isArray(featuredVideos) ? featuredVideos : [];
+  const qizhigeArticles = Array.isArray(featuredArticles) ? featuredArticles : [];
+  const qizhigeTools = Array.isArray(tools) ? tools : [];
+  const qizhigeSelectedToolId = typeof selectedToolId !== 'undefined' && selectedToolId
+    ? String(selectedToolId)
+    : '';
+  const qizhigeReturnTarget = typeof qizhigeReturnPath !== 'undefined' && qizhigeReturnPath
+    ? qizhigeReturnPath
+    : '/qizhige';
+  const qizhigeToolCards = qizhigeTools
+    .filter((tool) => !qizhigeSelectedToolId || String(tool.id) === qizhigeSelectedToolId)
+    .map((tool) => ({
+    id: tool.id,
+    nameZh: tool.nameZh || tool.name_zh || tool.nameCn || '未命名器物',
+    nameEn: tool.nameEn || tool.name_en || 'Untitled Tool',
+    dynasty: tool.dynasty || '待补充',
+    category: tool.category || '待补充类别',
+    summary: tool.summary || tool.introduction || '后续将在这里展示该计时工具的简短介绍。',
+    cover: (
+      (tool.image_cover || tool.imageCover || tool.imageUrl || tool.image || '')
+        .replace('.jpg', '.svg')
+    ) || '/images/site/tool-detail-placeholder.svg'
+  }));
+%>
+
+<section class="media-page qizhige-page" aria-labelledby="qizhige-page-title">
+  <header class="media-page__hero qizhige-page__hero">
+    <p class="media-page__eyebrow">器之格</p>
+    <h2 id="qizhige-page-title" class="media-page__title">器物图文与视听资源卷轴</h2>
+    <p class="media-page__subtitle">
+      将视频资源和主流媒体文章展开，构成器物的观看入口与传播脉络。
+    </p>
+  </header>
+
+  <section class="media-filter qizhige-filter" aria-labelledby="qizhige-filter-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">检索筛选</p>
+      <h3 id="qizhige-filter-title" class="section-heading__title">按器物浏览</h3>
+    </div>
+
+    <form class="filter-form" action="/qizhige" method="get">
+      <div class="filter-form__group">
+        <label for="qizhige-tool-filter">计时工具</label>
+        <select id="qizhige-tool-filter" name="toolId">
+          <option value="">全部工具</option>
+          <% if (typeof tools !== 'undefined' && Array.isArray(tools)) { %>
+            <% tools.forEach((tool) => { %>
+              <option value="<%= tool.id %>" <%= (typeof selectedToolId !== 'undefined' && String(selectedToolId) === String(tool.id)) ? 'selected' : '' %>>
+                <%= tool.name_zh || tool.nameZh || tool.nameCn || '未命名器物' %>
+              </option>
+            <% }) %>
+          <% } %>
+        </select>
+      </div>
+
+      <button class="button button--primary" type="submit">应用筛选</button>
+    </form>
+  </section>
+
+  <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+    <section class="notice-panel">
+      <p><%= errorMessage %></p>
+    </section>
+  <% } %>
+
+  <section class="qizhige-scroll" id="qizhige-tools-overview" aria-labelledby="qizhige-tools-title">
+    <div class="qizhige-scroll__paper qizhige-scroll__paper--tools">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">器物索引</p>
+        <h3 id="qizhige-tools-title" class="section-heading__title">计时工具一览</h3>
+      </div>
+
+      <div class="timeline-era__cards qizhige-tool-grid">
+        <% if (qizhigeToolCards.length) { %>
+          <% qizhigeToolCards.forEach((tool) => { %>
+            <article class="timeline-card">
+              <a class="timeline-card__link" href="/tools/<%= tool.id %>?returnTo=<%= encodeURIComponent(qizhigeReturnTarget + '#qizhige-tools-overview') %>">
+                <div class="timeline-card__image-wrap">
+                  <img
+                    class="timeline-card__image"
+                    src="<%= tool.cover %>"
+                    alt="<%= tool.nameZh %>"
+                  >
+                  <span class="timeline-card__glow" aria-hidden="true"></span>
+                </div>
+
+                <div class="timeline-card__body">
+                  <p class="timeline-card__meta">
+                    <span><%= tool.category %></span>
+                    <span><%= tool.dynasty %></span>
+                  </p>
+                  <h4 class="timeline-card__title"><%= tool.nameZh %></h4>
+                  <p class="timeline-card__subtitle"><%= tool.nameEn %></p>
+                  <p class="timeline-card__summary"><%= tool.summary %></p>
+                  <span class="timeline-card__action">进入器物详情</span>
+                </div>
+              </a>
+            </article>
+          <% }) %>
+        <% } else { %>
+          <article class="timeline-empty">
+            <h4 class="timeline-empty__title">计时工具待补充</h4>
+            <p class="timeline-empty__text">当前暂无可展示的器物条目。</p>
+          </article>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <section class="qizhige-scroll" aria-labelledby="qizhige-videos-title">
+    <div class="qizhige-scroll__paper qizhige-scroll__paper--video">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">第一卷</p>
+        <h3 id="qizhige-videos-title" class="section-heading__title">视频资源</h3>
+      </div>
+      <div class="card-grid card-grid--media">
+        <% if (qizhigeVideos.length) { %>
+          <% qizhigeVideos.forEach((video) => { %>
+            <%
+              const videoToolId = video.timing_tool_id || video.timingToolId || video.toolId || '';
+            %>
+            <article class="feature-card feature-card--media">
+              <a class="feature-card__link" href="<%= video.video_url %>" target="_blank" rel="noopener noreferrer">
+                <p class="feature-card__meta"><%= video.language || '多语种' %></p>
+                <h4 class="feature-card__title"><%= video.title_zh || video.titleCn || '器物视频' %></h4>
+                <p class="feature-card__subtitle"><%= video.title_en || video.titleEn || '' %></p>
+                <p class="feature-card__text"><%= video.description || '点击进入对应视频页查看更多相关影像。' %></p>
+              </a>
+            </article>
+          <% }) %>
+        <% } else { %>
+          <article class="feature-card feature-card--empty">
+            <h4 class="feature-card__title">视频资源待补充</h4>
+            <p class="feature-card__text">后续可继续接入器物讲解视频与专题纪录片。</p>
+          </article>
+        <% } %>
+      </div>
+      <div class="qizhige-scroll__actions">
+        <a class="button button--ghost" href="/videos">查看更多视频资源</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="qizhige-scroll" aria-labelledby="qizhige-articles-title">
+    <div class="qizhige-scroll__paper qizhige-scroll__paper--article">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">第二卷</p>
+        <h3 id="qizhige-articles-title" class="section-heading__title">主流媒体文章</h3>
+      </div>
+      <div class="card-grid card-grid--media">
+        <% if (qizhigeArticles.length) { %>
+          <% qizhigeArticles.forEach((article) => { %>
+            <%
+              const articleToolId = article.timing_tool_id || article.timingToolId || article.toolId || '';
+            %>
+            <article class="feature-card feature-card--media">
+              <a class="feature-card__link" href="<%= article.article_url %>" target="_blank" rel="noopener noreferrer">
+                <p class="feature-card__meta"><%= article.source || '主流媒体' %></p>
+                <h4 class="feature-card__title"><%= article.title %></h4>
+                <p class="feature-card__text"><%= article.summary || '点击查看相关文章列表与外部来源。' %></p>
+              </a>
+            </article>
+          <% }) %>
+        <% } else { %>
+          <article class="feature-card feature-card--empty">
+            <h4 class="feature-card__title">文章资源待补充</h4>
+            <p class="feature-card__text">后续可继续接入央视网、人民日报、新华社等来源。</p>
+          </article>
+        <% } %>
+      </div>
+      <div class="qizhige-scroll__actions">
+        <a class="button button--ghost" href="/articles">查看更多主流媒体文章</a>
+      </div>
+    </div>
+  </section>
+</section>
+
+<%- include('partials/footer') %>

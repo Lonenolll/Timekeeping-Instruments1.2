@@ -1,0 +1,225 @@
+<%- include('partials/header') %>
+
+<%
+  // 兼容 server.js 占位数据与后续 SQLite 字段命名。
+  const detailTool = tool || {};
+  const toolNameZh = detailTool.name_zh || detailTool.nameZh || detailTool.nameCn || '未命名器物';
+  const toolNameEn = detailTool.name_en || detailTool.nameEn || 'Untitled Tool';
+  const toolPinyin = detailTool.pinyin || '待补充';
+  const toolDynasty = detailTool.dynasty || '待补充';
+  const toolEra = detailTool.era || detailTool.period || '待补充';
+  const toolCategory = detailTool.category || '待补充';
+  const toolInventionPeriod = detailTool.invention_period || detailTool.inventionPeriod || '待补充';
+  const toolIntroduction = detailTool.introduction || detailTool.summary || detailTool.content || '后续将在这里展示该计时工具的详细简介。';
+  const toolStructureFeature = detailTool.structure_feature || detailTool.structureFeature || '后续将在这里补充结构特征说明。';
+  const toolWorkingPrinciple = detailTool.working_principle || detailTool.workingPrinciple || '后续将在这里补充工作原理。';
+  const toolCulturalSignificance = detailTool.cultural_significance || detailTool.culturalSignificance || '后续将在这里补充文化意义说明。';
+  const toolCover = (
+    detailTool.image_cover || detailTool.imageCover || detailTool.imageUrl || detailTool.image || '/images/site/tool-detail-placeholder.svg'
+  ).replace('.jpg', '.svg');
+  const detailVideos = Array.isArray(relatedVideos) ? relatedVideos : [];
+  const detailArticles = Array.isArray(relatedArticles) ? relatedArticles : [];
+  const detailImages = Array.isArray(relatedImages) ? relatedImages : [];
+  const detailBackHref = typeof returnPath !== 'undefined' && returnPath ? returnPath : '/timeline';
+
+  const getToolImageById = (toolId) => {
+    const map = {
+      1: '/images/tools/sundial-cover.svg',
+      2: '/images/tools/bronze-clepsydra-cover.svg',
+      3: '/images/tools/water-clock-cover.svg',
+      4: '/images/tools/gnomon-cover.svg',
+      5: '/images/tools/astronomical-clock-tower-cover.svg',
+      6: '/images/tools/incense-clock-cover.svg',
+      7: '/images/tools/fire-clock-cover.svg',
+      8: '/images/tools/night-watch-drum-cover.svg',
+      9: '/images/tools/armillary-sphere-cover.svg',
+      10: '/images/tools/astronomical-clock-cover.svg'
+    };
+    return map[Number(toolId)] || '/images/site/tool-detail-placeholder.svg';
+  };
+
+  const getEmbedUrl = (rawUrl) => {
+    if (!rawUrl) return '';
+    if (rawUrl.includes('player.bilibili.com')) return rawUrl;
+    if (rawUrl.includes('bilibili.com/video/')) {
+      const match = rawUrl.match(/\/video\/(BV[a-zA-Z0-9]+)/);
+      return match ? `https://player.bilibili.com/player.html?bvid=${match[1]}&page=1` : '';
+    }
+    if (rawUrl.includes('youtube.com/watch')) {
+      const parsed = new URL(rawUrl);
+      const videoId = parsed.searchParams.get('v');
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+    }
+    if (rawUrl.includes('youtu.be/')) {
+      const parts = rawUrl.split('youtu.be/');
+      return parts[1] ? `https://www.youtube.com/embed/${parts[1]}` : '';
+    }
+    return '';
+  };
+%>
+
+<article class="tool-detail-page" aria-labelledby="tool-detail-title">
+  <nav class="tool-detail-page__back-nav" aria-label="返回导航">
+    <a class="button button--ghost" href="<%= detailBackHref %>" onclick="if (window.history.length > 1) { event.preventDefault(); window.history.back(); }">返回</a>
+  </nav>
+
+  <!-- 页面头图与基础信息 -->
+  <header class="tool-detail-page__hero">
+    <div class="tool-detail-page__hero-image-wrap">
+      <img class="tool-detail-page__hero-image" src="<%= toolCover %>" alt="<%= toolNameZh %>">
+      <span class="tool-detail-page__hero-glow" aria-hidden="true"></span>
+    </div>
+    <div class="tool-detail-page__hero-content">
+      <p class="tool-detail-page__eyebrow">器之格</p>
+      <h2 id="tool-detail-title" class="tool-detail-page__title"><%= toolNameZh %></h2>
+      <p class="tool-detail-page__subtitle"><%= toolNameEn %></p>
+      <p class="tool-detail-page__pinyin"><%= toolPinyin %></p>
+
+      <div class="tool-detail-page__meta-grid">
+        <div class="tool-detail-page__meta-item">
+          <span class="tool-detail-page__meta-label">所属朝代</span>
+          <span class="tool-detail-page__meta-value"><%= toolDynasty %></span>
+        </div>
+        <div class="tool-detail-page__meta-item">
+          <span class="tool-detail-page__meta-label">所属时期</span>
+          <span class="tool-detail-page__meta-value"><%= toolEra %></span>
+        </div>
+        <div class="tool-detail-page__meta-item">
+          <span class="tool-detail-page__meta-label">工具类别</span>
+          <span class="tool-detail-page__meta-value"><%= toolCategory %></span>
+        </div>
+        <div class="tool-detail-page__meta-item">
+          <span class="tool-detail-page__meta-label">发明时期</span>
+          <span class="tool-detail-page__meta-value"><%= toolInventionPeriod %></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 详情说明区 -->
+  <section class="tool-detail-section" aria-labelledby="tool-introduction-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">器物解读</p>
+      <h3 id="tool-introduction-title" class="section-heading__title">工具简介</h3>
+    </div>
+    <div class="tool-detail-panel">
+      <p><%= toolIntroduction %></p>
+    </div>
+  </section>
+
+  <section class="tool-detail-section tool-detail-section--dual" aria-labelledby="tool-structure-title">
+    <div class="tool-detail-panel">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">形制</p>
+        <h3 id="tool-structure-title" class="section-heading__title">结构特征</h3>
+      </div>
+      <p><%= toolStructureFeature %></p>
+    </div>
+
+    <div class="tool-detail-panel">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">运作</p>
+        <h3 class="section-heading__title">工作原理</h3>
+      </div>
+      <p><%= toolWorkingPrinciple %></p>
+    </div>
+  </section>
+
+  <section class="tool-detail-section" aria-labelledby="tool-significance-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">文明意义</p>
+      <h3 id="tool-significance-title" class="section-heading__title">文化意义</h3>
+    </div>
+    <div class="tool-detail-panel">
+      <p><%= toolCulturalSignificance %></p>
+    </div>
+  </section>
+
+  <!-- 相关视频 -->
+  <section class="tool-detail-section" aria-labelledby="tool-videos-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">视听资源</p>
+      <h3 id="tool-videos-title" class="section-heading__title">相关视频</h3>
+    </div>
+
+    <% if (detailVideos.length) { %>
+      <div class="card-grid card-grid--media">
+        <% detailVideos.forEach((video) => { %>
+          <%
+            const videoTitleZh = video.title_zh || video.titleZh || video.titleCn || '未命名视频';
+            const videoTitleEn = video.title_en || video.titleEn || '';
+            const videoUrl = video.play_url || video.video_url || video.url || '#';
+            const videoToolId = video.timing_tool_id || video.timingToolId || video.toolId || detailTool.id;
+            const videoThumbnail = getToolImageById(videoToolId);
+            const videoDescription = video.description || '后续将在这里展示视频简介。';
+            const embedUrl = getEmbedUrl(videoUrl);
+            const isDirectVideo = /\.(mp4|webm|ogg)(\?.*)?$/i.test(videoUrl);
+          %>
+          <article class="feature-card feature-card--media">
+            <div class="feature-card__image-wrap">
+              <% if (embedUrl) { %>
+                <iframe
+                  class="feature-card__iframe"
+                  src="<%= embedUrl %>"
+                  title="<%= videoTitleZh %>"
+                  loading="lazy"
+                  allowfullscreen
+                ></iframe>
+              <% } else if (isDirectVideo) { %>
+                <video class="feature-card__video" controls poster="<%= videoThumbnail %>">
+                  <source src="<%= videoUrl %>">
+                  您的浏览器暂不支持 video 标签。
+                </video>
+              <% } else { %>
+                <img class="feature-card__image" src="<%= videoThumbnail %>" alt="<%= videoTitleZh %>">
+              <% } %>
+            </div>
+            <p class="feature-card__meta"><%= video.language || '多语种' %></p>
+            <h4 class="feature-card__title"><%= videoTitleZh %> <%= videoTitleEn ? `/ ${videoTitleEn}` : '' %></h4>
+            <p class="feature-card__text"><%= videoDescription %></p>
+            <p class="feature-card__link-row">
+              <a href="<%= videoUrl %>" target="_blank" rel="noopener noreferrer">前往来源页观看</a>
+            </p>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="tool-detail-panel">
+        <p>暂无相关视频资源，后续可补充中文与英文介绍视频。</p>
+      </div>
+    <% } %>
+  </section>
+
+  <!-- 相关文章 -->
+  <section class="tool-detail-section" aria-labelledby="tool-articles-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">延伸阅读</p>
+      <h3 id="tool-articles-title" class="section-heading__title">相关文章列表</h3>
+    </div>
+
+    <% if (detailArticles.length) { %>
+      <div class="list-block">
+        <% detailArticles.forEach((article) => { %>
+          <article class="list-item article-list-item">
+            <h4 class="article-list-item__title"><%= article.title %></h4>
+            <p class="article-list-item__meta">
+              <span><%= article.source || '主流媒体' %></span>
+              <span><%= article.publish_date || article.publishDate || '日期待补充' %></span>
+            </p>
+            <p class="article-list-item__summary"><%= article.summary || '后续将在这里展示文章摘要。' %></p>
+            <p class="article-list-item__link">
+              <a href="<%= article.article_url || article.url || '#' %>" target="_blank" rel="noopener noreferrer">阅读原文</a>
+            </p>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="tool-detail-panel">
+        <p>暂无相关文章，后续可接入央视网、人民日报、新华社等媒体索引内容。</p>
+      </div>
+    <% } %>
+  </section>
+
+</article>
+
+<%- include('partials/footer') %>

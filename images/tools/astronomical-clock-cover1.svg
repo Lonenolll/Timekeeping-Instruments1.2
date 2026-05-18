@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#081220"/>
+  <rect x="450" y="180" width="300" height="420" rx="24" fill="#17314d" stroke="#c9a760" stroke-width="8"/>
+  <circle cx="600" cy="320" r="110" fill="none" stroke="#f3ecdc" stroke-width="10"/>
+  <line x1="600" y1="320" x2="600" y2="250" stroke="#a63a32" stroke-width="8"/>
+  <line x1="600" y1="320" x2="665" y2="365" stroke="#5c84c9" stroke-width="8"/>
+  <rect x="535" y="470" width="130" height="90" fill="#8a3d34"/>
+  <text x="600" y="120" fill="#f3ecdc" font-size="58" text-anchor="middle" font-family="serif">天文钟</text>
+  <text x="600" y="180" fill="#c9a760" font-size="32" text-anchor="middle" font-family="serif">Astronomical Clock</text>
+</svg>

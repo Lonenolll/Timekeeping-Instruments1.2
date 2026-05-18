@@ -1,0 +1,176 @@
+<%- include('partials/header') %>
+
+<%
+  const tools = Array.isArray(toolResults) ? toolResults : [];
+  const videos = Array.isArray(videoResults) ? videoResults : [];
+  const articles = Array.isArray(articleResults) ? articleResults : [];
+  const images = Array.isArray(imageResults) ? imageResults : [];
+  const totalCount = tools.length + videos.length + articles.length + images.length;
+  const getToolImageById = (toolId) => {
+    const map = {
+      1: '/images/tools/sundial-cover.svg',
+      2: '/images/tools/bronze-clepsydra-cover.svg',
+      3: '/images/tools/water-clock-cover.svg',
+      4: '/images/tools/gnomon-cover.svg',
+      5: '/images/tools/astronomical-clock-tower-cover.svg',
+      6: '/images/tools/incense-clock-cover.svg',
+      7: '/images/tools/fire-clock-cover.svg',
+      8: '/images/tools/night-watch-drum-cover.svg',
+      9: '/images/tools/armillary-sphere-cover.svg',
+      10: '/images/tools/astronomical-clock-cover.svg'
+    };
+    return map[Number(toolId)] || '/images/site/tool-detail-placeholder.svg';
+  };
+%>
+
+<section class="search-page" aria-labelledby="search-page-title">
+  <header class="media-page__hero">
+    <p class="media-page__eyebrow">全站检索</p>
+    <h2 id="search-page-title" class="media-page__title">搜索结果</h2>
+    <p class="media-page__subtitle">
+      从计时工具、视频、文章与图片四类内容中检索你感兴趣的时间文明线索。
+    </p>
+  </header>
+
+  <section class="media-filter" aria-labelledby="search-form-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">关键词搜索</p>
+      <h3 id="search-form-title" class="section-heading__title">输入名称、标题或关键词</h3>
+    </div>
+
+    <form action="/search" method="get" class="search-form">
+      <input
+        type="text"
+        name="q"
+        value="<%= keyword %>"
+        placeholder="输入计时工具中文名、英文名、视频标题、文章标题或图片标题"
+      >
+      <button type="submit">搜索</button>
+    </form>
+  </section>
+
+  <% if (keyword) { %>
+    <section class="notice-panel">
+      当前搜索关键词：<strong><%= keyword %></strong>
+      ，共匹配到 <strong><%= totalCount %></strong> 条结果。
+    </section>
+
+    <% if (totalCount > 0) { %>
+      <section class="search-group" aria-labelledby="search-tools-title">
+        <div class="section-heading">
+          <p class="section-heading__eyebrow">分类结果</p>
+          <h3 id="search-tools-title" class="section-heading__title">匹配到的计时工具</h3>
+        </div>
+        <% if (tools.length) { %>
+          <div class="list-block">
+            <% tools.forEach((tool) => { %>
+              <article class="list-item">
+                <h4><a href="/tools/<%= tool.id %>"><%= tool.name_zh %> / <%= tool.name_en %></a></h4>
+                <p><strong>朝代：</strong><%= tool.dynasty || '待补充' %> | <strong>类别：</strong><%= tool.category || '待补充' %></p>
+                <p><%= tool.introduction || '后续将在这里展示工具简介。' %></p>
+              </article>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="tool-detail-panel"><p>未匹配到计时工具。</p></div>
+        <% } %>
+      </section>
+
+      <section class="search-group" aria-labelledby="search-videos-title">
+        <div class="section-heading">
+          <p class="section-heading__eyebrow">分类结果</p>
+          <h3 id="search-videos-title" class="section-heading__title">匹配到的视频</h3>
+        </div>
+        <% if (videos.length) { %>
+          <div class="card-grid card-grid--media">
+            <% videos.forEach((video) => { %>
+              <article class="feature-card feature-card--media">
+                <div class="feature-card__image-wrap">
+                  <img class="feature-card__image" src="<%= video.thumbnail || '/images/site/video-placeholder.jpg' %>" alt="<%= video.title_zh %>">
+                </div>
+                <p class="feature-card__meta"><span><%= video.language || '语言待补充' %></span><span><%= video.tool_name_zh || '未关联器物' %></span></p>
+                <h4 class="feature-card__title"><%= video.title_zh %></h4>
+                <p class="feature-card__subtitle"><%= video.title_en || '' %></p>
+                <p class="feature-card__text"><%= video.description || '后续将在这里展示视频简介。' %></p>
+                <p class="feature-card__link-row"><a href="<%= video.play_url || video.video_url || '#' %>" target="_blank" rel="noopener noreferrer">前往来源页观看</a></p>
+              </article>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="tool-detail-panel"><p>未匹配到视频资源。</p></div>
+        <% } %>
+      </section>
+
+      <section class="search-group" aria-labelledby="search-articles-title">
+        <div class="section-heading">
+          <p class="section-heading__eyebrow">分类结果</p>
+          <h3 id="search-articles-title" class="section-heading__title">匹配到的文章</h3>
+        </div>
+        <% if (articles.length) { %>
+          <div class="list-block">
+            <% articles.forEach((article) => { %>
+              <article class="list-item article-list-item">
+                <h4 class="article-list-item__title"><%= article.title %></h4>
+                <p class="article-list-item__meta">
+                  <span><%= article.source || '来源待补充' %></span>
+                  <span><%= article.publish_date || '日期待补充' %></span>
+                  <span><%= article.tool_name_zh || '未关联器物' %></span>
+                </p>
+                <p class="article-list-item__summary"><%= article.summary || '后续将在这里展示文章摘要。' %></p>
+                <p class="article-list-item__link"><a href="<%= article.article_url || '#' %>" target="_blank" rel="noopener noreferrer">查看原文链接</a></p>
+              </article>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="tool-detail-panel"><p>未匹配到相关文章。</p></div>
+        <% } %>
+      </section>
+
+      <section class="search-group" aria-labelledby="search-images-title">
+        <div class="section-heading">
+          <p class="section-heading__eyebrow">分类结果</p>
+          <h3 id="search-images-title" class="section-heading__title">匹配到的图片</h3>
+        </div>
+        <% if (images.length) { %>
+          <div class="image-masonry">
+            <% images.forEach((image) => { %>
+              <%
+                const imageToolId = image.timing_tool_id || image.toolId;
+                const imageSrc = getToolImageById(imageToolId);
+                const officialUrl = image.official_page_url || '';
+                const kindLabel = image.image_kind || '';
+              %>
+              <article class="feature-card feature-card--image image-masonry__item">
+                <div class="feature-card__image-wrap">
+                  <img class="feature-card__image" src="<%= imageSrc %>" alt="<%= image.title || '图片资源' %>">
+                </div>
+                <h4 class="feature-card__title"><%= image.title || '图片资源' %></h4>
+                <% if (kindLabel) { %><p class="feature-card__meta"><%= kindLabel %></p><% } %>
+                <p class="feature-card__meta"><%= image.tool_name_zh || '未关联器物' %></p>
+                <p class="feature-card__text"><%= image.caption || '后续将在这里展示图注说明。' %></p>
+                <p class="feature-card__meta"><%= image.source || '来源待补充' %></p>
+                <% if (officialUrl) { %>
+                  <p class="feature-card__link-row">
+                    <a href="<%= officialUrl %>" rel="noopener noreferrer" target="_blank">打开官方媒体配图页面</a>
+                  </p>
+                <% } %>
+              </article>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="tool-detail-panel"><p>未匹配到图片资源。</p></div>
+        <% } %>
+      </section>
+    <% } else { %>
+      <div class="tool-detail-panel">
+        <p>未检索到与“<strong><%= keyword %></strong>”相关的内容。可以尝试更简短的词，或改用器物中文名、英文名进行搜索。</p>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="tool-detail-panel">
+      <p>请输入关键词开始检索。你可以搜索计时工具中文名、英文名、视频标题、文章标题或图片标题。</p>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

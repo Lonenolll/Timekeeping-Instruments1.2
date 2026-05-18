@@ -1,0 +1,202 @@
+<%- include('partials/header') %>
+
+<%
+  const timelineTools = Array.isArray(tools) ? tools : [];
+  const dynastyOrder = ['先秦', '汉', '唐', '宋', '元', '明', '清'];
+  const currentDynasty = typeof selectedDynasty !== 'undefined' ? selectedDynasty : '';
+
+  const eraAnchorByDynasty = {
+    先秦: 'era-xianqin',
+    汉: 'era-han',
+    唐: 'era-tang',
+    宋: 'era-song',
+    元: 'era-yuan',
+    明: 'era-ming',
+    清: 'era-qing'
+  };
+
+  const heritageNotes = {
+    先秦: {
+      body: '先秦是中国古代“观象授时”传统的奠基阶段：以立杆测影定节气、以漏刻雏形与经验性节律安排农事与祭祀。圭表一类器物把太阳周年运动转写为可量度的影长，为后世历法、漏刻与宫廷报时提供了共同的知识起点。',
+      refs: [
+        { label: '百度百科：圭表', href: 'https://baike.baidu.com/item/%E5%9C%AD%E8%A1%A8' },
+        { label: '百度百科：中国古代计时器', href: 'https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD%E5%8F%A4%E4%BB%A3%E8%AE%A1%E6%97%B6%E5%99%A8' },
+        { label: '央视网：日晷和漏刻的计时原理', href: 'https://news.cctv.com/2019/09/27/ARTIkxB8Pg3k6U6COkTDgyoP190927.shtml' }
+      ]
+    },
+    汉: {
+      body: '两汉时期，漏刻体系在宫廷与官署中走向成熟，日晷与浑象类仪器与天文观测结合更紧，时间测量从经验性安排过渡到更可复现的制度化授时。',
+      refs: [
+        { label: '百度百科：漏刻', href: 'https://baike.baidu.com/item/%E6%BC%8F%E5%88%BB' },
+        { label: '百度百科：日晷', href: 'https://baike.baidu.com/item/%E6%97%A5%E6%99%B7' },
+        { label: '新华网：古代科技文明相关报道', href: 'https://www.news.cn/science/20240927/4a8f4c18164f48a1b1e1336ac6f713ad/c.html' }
+      ]
+    },
+    唐: {
+      body: '唐代天文机构与漏刻制度高度发达，漏刻作为昼夜连续计时的骨干，与司天监、报时体系相互配合，支撑都城公共生活与礼仪时刻的精密编排。',
+      refs: [
+        { label: '百度百科：漏刻', href: 'https://baike.baidu.com/item/%E6%BC%8F%E5%88%BB' },
+        { label: '央视网：日晷和漏刻', href: 'https://news.cctv.com/2019/09/27/ARTIkxB8Pg3k6U6COkTDgyoP190927.shtml' }
+      ]
+    },
+    宋: {
+      body: '北宋将天文观测、水力驱动与分层报时整合为大型系统工程，水运仪象台集中体现了宋代在机械传动与“天—时—政”一体化叙事上的高峰，其技术文献亦成为后世复原与研究的重要依据。',
+      refs: [
+        { label: '百度百科：水运仪象台', href: 'https://baike.baidu.com/item/%E6%B0%B4%E8%BF%90%E4%BB%AA%E8%B1%A1%E5%8F%B0' },
+        { label: '百度百科：新仪象法要', href: 'https://baike.baidu.com/item/%E6%96%B0%E4%BB%AA%E8%B1%A1%E6%B3%95%E8%A6%81' },
+        { label: '新华网：科技史专题', href: 'https://www.news.cn/science/20240927/4a8f4c18164f48a1b1e1336ac6f713ad/c.html' }
+      ]
+    },
+    元: {
+      body: '元代在大一统疆域内重整历法与观测网络，郭守敬等人在圭表测影、简仪与漏刻体系上推进仪器革新，并以《授时历》把回归年长度推算到与后世公历同精度量级，体现了草原帝国与中原天文传统的深度整合。',
+      refs: [
+        { label: '百度百科：郭守敬', href: 'https://baike.baidu.com/item/%E9%83%AD%E5%AE%88%E6%95%AC' },
+        { label: '百度百科：授时历', href: 'https://baike.baidu.com/item/%E6%8E%88%E6%97%B6%E5%8E%86' },
+        { label: '百度百科：漏刻', href: 'https://baike.baidu.com/item/%E6%BC%8F%E5%88%BB' },
+        { label: '人民网：传统文化·科技', href: 'https://culture.people.com.cn/n1/2021/0120/c1013-32006030.html' }
+      ]
+    },
+    明: {
+      body: '明代在继承宋元漏刻与机构授时的同时，城市报更、香道计时与民间工艺结合更紧密：更鼓制度把“公共时间”写入夜色，香篆、燃线等器物则在书房与寺院中呈现可感、可闻的日常时间美学。',
+      refs: [
+        { label: '百度百科：香篆钟', href: 'https://baike.baidu.com/item/%E9%A6%99%E7%82%AD%E9%92%9F' },
+        { label: '百度百科：漏刻', href: 'https://baike.baidu.com/item/%E6%BC%8F%E5%88%BB' },
+        { label: '央视网：古人的时间之美', href: 'https://caiyi.cctv.com/2025/01/10/ARTIKhuw3rClwamLzKNYkcgX250110.shtml' }
+      ]
+    },
+    清: {
+      body: '清代宫廷长期并置漏刻与机械自鸣钟：前者延续礼制性授时与机构传统，后者则折射中西技术交流背景下，精密齿轮传动对宫廷陈设、礼仪时刻与审美趣味的综合影响。',
+      refs: [
+        { label: '百度百科：自鸣钟', href: 'https://baike.baidu.com/item/%E8%87%AA%E9%B8%A3%E9%92%9F' },
+        { label: '百度百科：漏刻', href: 'https://baike.baidu.com/item/%E6%BC%8F%E5%88%BB' },
+        { label: '央视网：日晷和漏刻', href: 'https://news.cctv.com/2019/09/27/ARTIkxB8Pg3k6U6COkTDgyoP190927.shtml' }
+      ]
+    }
+  };
+
+  const normalizedTools = timelineTools.map((tool) => ({
+    id: tool.id,
+    nameZh: tool.nameZh || tool.name_zh || tool.nameCn || '未命名器物',
+    nameEn: tool.nameEn || tool.name_en || 'Untitled Tool',
+    dynasty: tool.dynasty || '待补充',
+    category: tool.category || '待补充类别',
+    summary: tool.summary || tool.introduction || '后续将在这里展示该计时工具的简短介绍。',
+    cover: (
+      (tool.image_cover || tool.imageCover || tool.imageUrl || tool.image || '')
+        .replace('.jpg', '.svg')
+    ) || '/images/site/tool-detail-placeholder.svg'
+  }));
+
+  const groupedTimeline = dynastyOrder.map((dynastyName) => ({
+    dynasty: dynastyName,
+    items: normalizedTools.filter((tool) => tool.dynasty === dynastyName)
+  }));
+%>
+
+<section class="timeline-page" aria-labelledby="timeline-page-title">
+  <header class="timeline-page__hero timeline-page__hero--open">
+    <div class="timeline-page__hero-content">
+      <p class="timeline-page__eyebrow">时之脉</p>
+      <h2 id="timeline-page-title" class="timeline-page__title">中国古代计时工具发展演变时间轴</h2>
+      <p class="timeline-page__subtitle">
+        从观象授时到机械报时，沿着朝代变迁梳理中国古代计时工具的知识谱系与文化气象。
+      </p>
+    </div>
+  </header>
+
+  <section class="timeline-filter" aria-labelledby="timeline-filter-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">历史筛选</p>
+      <h3 id="timeline-filter-title" class="section-heading__title">按朝代浏览时间文明</h3>
+    </div>
+
+    <nav class="timeline-filter__nav" aria-label="朝代筛选">
+      <a
+        href="/timeline"
+        class="timeline-filter__link <%= currentDynasty ? '' : 'is-active' %>"
+        <%= currentDynasty ? '' : 'aria-current="page"' %>
+      >
+        全部
+      </a>
+      <% dynastyOrder.forEach((dynastyName) => { %>
+        <a
+          href="/timeline?dynasty=<%= encodeURIComponent(dynastyName) %>"
+          class="timeline-filter__link <%= currentDynasty === dynastyName ? 'is-active' : '' %>"
+          <%= currentDynasty === dynastyName ? 'aria-current="page"' : '' %>
+        >
+          <%= dynastyName %>
+        </a>
+      <% }) %>
+    </nav>
+  </section>
+
+  <section class="timeline-stream" aria-label="计时工具发展时间轴">
+    <% groupedTimeline.forEach((group) => { %>
+      <% if (!currentDynasty || currentDynasty === group.dynasty) { %>
+        <% const eraId = eraAnchorByDynasty[group.dynasty] || ''; %>
+        <% const note = heritageNotes[group.dynasty]; %>
+        <section class="timeline-era" aria-labelledby="<%= eraId %>">
+          <div class="timeline-era__marker">
+            <span class="timeline-era__dot"></span>
+            <h3 id="<%= eraId %>" class="timeline-era__title"><%= group.dynasty %></h3>
+          </div>
+
+          <div class="timeline-era__content">
+            <% if (note) { %>
+              <div class="timeline-era__synopsis">
+                <p><%= note.body %></p>
+                <% if (note.refs && note.refs.length) { %>
+                  <p class="timeline-era__refs-label">延伸阅读（开放网络百科与主流媒体公开报道，便于核对与深入学习）</p>
+                  <ul class="timeline-era__refs">
+                    <% note.refs.forEach((ref) => { %>
+                      <li><a href="<%= ref.href %>" rel="noopener noreferrer" target="_blank"><%= ref.label %></a></li>
+                    <% }) %>
+                  </ul>
+                <% } %>
+              </div>
+            <% } %>
+
+            <% if (group.items.length) { %>
+              <div class="timeline-era__cards">
+                <% group.items.forEach((tool) => { %>
+                  <article class="timeline-card">
+                    <a class="timeline-card__link" href="/tools/<%= tool.id %>">
+                      <div class="timeline-card__image-wrap">
+                        <img
+                          class="timeline-card__image"
+                          src="<%= tool.cover %>"
+                          alt="<%= tool.nameZh %>"
+                        >
+                        <span class="timeline-card__glow" aria-hidden="true"></span>
+                      </div>
+
+                      <div class="timeline-card__body">
+                        <p class="timeline-card__meta">
+                          <span><%= tool.category %></span>
+                          <span><%= tool.dynasty %></span>
+                        </p>
+                        <h4 class="timeline-card__title"><%= tool.nameZh %></h4>
+                        <p class="timeline-card__subtitle"><%= tool.nameEn %></p>
+                        <p class="timeline-card__summary"><%= tool.summary %></p>
+                        <span class="timeline-card__action">进入器物详情</span>
+                      </div>
+                    </a>
+                  </article>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <article class="timeline-empty">
+                <h4 class="timeline-empty__title"><%= group.dynasty %>时期 · 器物卡片待扩充</h4>
+                <p class="timeline-empty__text">
+                  本站在线数据库中尚未收录该朝代的器物条目，上文的文献导读已概述该时期在中国古代授时体系中的位置。欢迎结合延伸阅读自行备课，后续也可在管理端补充器物与图像资料。
+                </p>
+              </article>
+            <% } %>
+          </div>
+        </section>
+      <% } %>
+    <% }) %>
+  </section>
+</section>
+
+<%- include('partials/footer') %>

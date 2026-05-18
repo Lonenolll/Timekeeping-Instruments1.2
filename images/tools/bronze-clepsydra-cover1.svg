@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#0b1629"/>
+  <rect x="430" y="210" width="110" height="300" rx="40" fill="#6f87a9"/>
+  <rect x="560" y="170" width="110" height="340" rx="40" fill="#c9a760"/>
+  <rect x="690" y="230" width="110" height="280" rx="40" fill="#8a3d34"/>
+  <path d="M485 510c18 60 38 78 70 88" stroke="#8cc2ff" stroke-width="8" fill="none"/>
+  <path d="M615 510c18 60 38 78 70 88" stroke="#8cc2ff" stroke-width="8" fill="none"/>
+  <text x="600" y="120" fill="#f3ecdc" font-size="58" text-anchor="middle" font-family="serif">铜壶滴漏</text>
+  <text x="600" y="185" fill="#c9a760" font-size="32" text-anchor="middle" font-family="serif">Bronze Clepsydra</text>
+</svg>

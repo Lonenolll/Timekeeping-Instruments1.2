@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#0a1424"/>
+  <circle cx="600" cy="338" r="96" fill="#5c84c9"/>
+  <polygon points="565,280 565,396 670,338" fill="#f3ecdc"/>
+  <text x="600" y="130" fill="#f3ecdc" font-size="54" text-anchor="middle" font-family="serif">时间之器视频资源</text>
+  <text x="600" y="190" fill="#c9a760" font-size="28" text-anchor="middle" font-family="serif">Video Resource Placeholder</text>
+</svg>

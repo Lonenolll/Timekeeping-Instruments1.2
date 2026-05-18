@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#091120"/>
+      <stop offset="100%" stop-color="#163456"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="220" fill="none" stroke="#c9a760" stroke-width="10"/>
+  <line x1="600" y1="420" x2="760" y2="240" stroke="#f2efe4" stroke-width="12"/>
+  <path d="M390 420h420" stroke="#5c84c9" stroke-width="6"/>
+  <text x="600" y="140" fill="#f3ecdc" font-size="62" text-anchor="middle" font-family="serif">日晷</text>
+  <text x="600" y="210" fill="#c9a760" font-size="34" text-anchor="middle" font-family="serif">Sundial</text>
+</svg>

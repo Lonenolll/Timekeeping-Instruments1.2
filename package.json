@@ -1,0 +1,30 @@
+{
+  "name": "time-vessel-chinese-ancient-timekeeping",
+  "version": "1.0.0",
+  "description": "时间之器·中国古代计时工具沉浸式图文站",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "db:init": "node scripts/init-db.js",
+    "db:migrate-images": "node scripts/migrate-images-official-columns.js"
+  },
+  "keywords": [
+    "china",
+    "culture",
+    "timekeeping",
+    "express",
+    "sqlite",
+    "ejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.22.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

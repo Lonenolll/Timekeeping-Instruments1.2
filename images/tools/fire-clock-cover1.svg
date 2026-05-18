@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#0d1322"/>
+  <line x1="320" y1="420" x2="860" y2="420" stroke="#f3ecdc" stroke-width="14"/>
+  <circle cx="770" cy="420" r="34" fill="#a63a32"/>
+  <path d="M795 398c22-38 62-54 84-54-18 18-18 54-48 74z" fill="#f2b14c"/>
+  <path d="M816 388c16-24 34-34 46-34-8 10-10 24-22 36z" fill="#ffe39f"/>
+  <text x="600" y="150" fill="#f3ecdc" font-size="58" text-anchor="middle" font-family="serif">火钟</text>
+  <text x="600" y="210" fill="#c9a760" font-size="32" text-anchor="middle" font-family="serif">Fire Clock</text>
+</svg>

@@ -1,0 +1,241 @@
+<%- include('partials/header') %>
+
+<%
+  const homeFeaturedTools = Array.isArray(featuredTools) ? featuredTools : [];
+  const homeFeaturedVideos = Array.isArray(featuredVideos) ? featuredVideos : [];
+  const homeFeaturedArticles = Array.isArray(featuredArticles) ? featuredArticles : [];
+  const homeFeaturedImages = Array.isArray(featuredImages) ? featuredImages : [];
+  const dynastyNavItems = Array.isArray(dynasties) && dynasties.length
+    ? dynasties
+    : ['先秦', '汉', '唐', '宋', '元', '明', '清'];
+
+  const dynastyTimelineHash = {
+    先秦: 'era-xianqin',
+    汉: 'era-han',
+    唐: 'era-tang',
+    宋: 'era-song',
+    元: 'era-yuan',
+    明: 'era-ming',
+    清: 'era-qing'
+  };
+
+  const getToolImageById = (toolId) => {
+    const map = {
+      1: '/images/tools/sundial-cover.svg',
+      2: '/images/tools/bronze-clepsydra-cover.svg',
+      3: '/images/tools/water-clock-cover.svg',
+      4: '/images/tools/gnomon-cover.svg',
+      5: '/images/tools/astronomical-clock-tower-cover.svg',
+      6: '/images/tools/incense-clock-cover.svg',
+      7: '/images/tools/fire-clock-cover.svg',
+      8: '/images/tools/night-watch-drum-cover.svg',
+      9: '/images/tools/armillary-sphere-cover.svg',
+      10: '/images/tools/astronomical-clock-cover.svg'
+    };
+
+    return map[Number(toolId)] || '/images/site/tool-detail-placeholder.svg';
+  };
+%>
+
+<div class="home-page">
+  <section class="home-hero" aria-labelledby="home-hero-title">
+    <div class="home-hero__backdrop">
+      <div class="home-hero__overlay"></div>
+      <div class="home-hero__grid-fade" aria-hidden="true"></div>
+      <div class="home-hero__waterflow" aria-hidden="true">
+        <span class="home-hero__waterline home-hero__waterline--1"></span>
+        <span class="home-hero__waterline home-hero__waterline--2"></span>
+        <span class="home-hero__waterline home-hero__waterline--3"></span>
+      </div>
+      <div class="home-hero__pattern home-hero__pattern--left" aria-hidden="true"></div>
+      <div class="home-hero__pattern home-hero__pattern--right" aria-hidden="true"></div>
+
+      <div class="home-hero__particles" id="hero-particles" aria-hidden="true">
+        <span class="home-hero__particle home-hero__particle--1"></span>
+        <span class="home-hero__particle home-hero__particle--2"></span>
+        <span class="home-hero__particle home-hero__particle--3"></span>
+        <span class="home-hero__particle home-hero__particle--4"></span>
+      </div>
+
+      <div class="home-hero__layout">
+        <div class="home-hero__content">
+          <p class="home-hero__eyebrow">时间文明 · 器物叙事 · 数字沉浸</p>
+          <h2 id="home-hero-title" class="home-hero__title">时间之器</h2>
+          <p class="home-hero__subtitle">中国古代计时工具沉浸式图文站</p>
+          <p class="home-hero__subtitle-en">
+            Explore Ancient Chinese Timekeeping Through Instruments, Cosmology and Cultural Memory
+          </p>
+          <p class="home-hero__description">
+            从观象授时到机械报时，从日影、水流、香火到天象轮转，这里以图文、影像与资料索引重构中国古代的时间知识谱系。
+          </p>
+          <div class="home-hero__actions">
+            <a class="button button--primary" href="/timeline">进入时之脉</a>
+            <a class="button button--ghost" href="/qizhige">进入器之格</a>
+          </div>
+        </div>
+
+        <aside class="home-sundial" aria-labelledby="home-sundial-title">
+          <div class="home-sundial__shell">
+            <p id="home-sundial-title" class="home-sundial__eyebrow">今时观影</p>
+            <div class="home-sundial__dial" data-sundial>
+              <div class="home-sundial__rings"></div>
+              <div class="home-sundial__gnomon"></div>
+              <div class="home-sundial__shadow" data-sundial-shadow></div>
+              <div class="home-sundial__center"></div>
+              <span class="home-sundial__mark home-sundial__mark--zi">子</span>
+              <span class="home-sundial__mark home-sundial__mark--mao">卯</span>
+              <span class="home-sundial__mark home-sundial__mark--wu">午</span>
+              <span class="home-sundial__mark home-sundial__mark--you">酉</span>
+            </div>
+            <p class="home-sundial__time" data-sundial-time>时刻加载中</p>
+            <p class="home-sundial__hint">以当前本地时间模拟日晷盘影长与方位</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-intro" aria-labelledby="intro-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">时间观念</p>
+      <h2 id="intro-title" class="section-heading__title">观天以定时，因时而立序</h2>
+    </div>
+    <div class="home-intro__grid">
+      <article class="home-intro__card">
+        <p>
+          在中国古代，“时间”并不只是刻度和数字，它与天文观测、节气农时、礼制秩序、城市报更、
+          王朝治理以及人与自然的关系紧密相连。计时工具不仅测量时刻，也塑造生活节律与文明感知。
+        </p>
+      </article>
+      <article class="home-intro__card">
+        <p>
+          从圭表、日晷到漏刻、水运仪象台，中国古代计时文明体现出由观象到制度、由经验到机械、
+          由自然节律到精密构造的不断演进，折射出独特的时空观与宇宙观。
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <div class="time-river" aria-hidden="true">
+    <span class="time-river__line time-river__line--1"></span>
+    <span class="time-river__line time-river__line--2"></span>
+    <span class="time-river__line time-river__line--3"></span>
+  </div>
+
+  <section class="home-section timeline-entry" aria-labelledby="timeline-entry-title">
+    <div class="timeline-entry__panel">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">时之脉</p>
+        <h2 id="timeline-entry-title" class="section-heading__title">沿着朝代与器物，进入时间的长河</h2>
+      </div>
+      <p class="timeline-entry__text">
+        通过发展时间轴总览中国古代计时工具的演变轨迹，理解不同历史阶段的技术特征、制度语境与文化气象。
+      </p>
+      <div class="timeline-entry__actions">
+        <a class="button button--primary" href="/timeline">查看时间轴总览</a>
+      </div>
+      <div class="timeline-entry__dynasty-block" aria-labelledby="dynasty-nav-title">
+        <p id="dynasty-nav-title" class="timeline-entry__dynasty-heading">朝代索引</p>
+        <p class="timeline-entry__dynasty-hint">点击下方朝代，将在「时之脉」时间轴中定位到对应段落（含文献导读与器物卡片）。</p>
+        <nav class="dynasty-nav__list timeline-entry__dynasty-list" aria-label="朝代索引，跳转至时间轴对应位置">
+          <% dynastyNavItems.forEach((dynasty) => { %>
+            <% const eraHash = dynastyTimelineHash[dynasty] || ''; %>
+            <a
+              class="dynasty-nav__link"
+              href="/timeline<%= eraHash ? '#' + eraHash : '' %>"
+            >
+              <span class="dynasty-nav__label"><%= dynasty %></span>
+            </a>
+          <% }) %>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <div class="time-river time-river--wide" aria-hidden="true">
+    <span class="time-river__line time-river__line--1"></span>
+    <span class="time-river__line time-river__line--2"></span>
+    <span class="time-river__line time-river__line--3"></span>
+  </div>
+
+  <section class="home-section qizhige-entry" aria-labelledby="qizhige-entry-title">
+    <div class="qizhige-entry__shell">
+      <div class="section-heading">
+        <p class="section-heading__eyebrow">器之格</p>
+        <h2 id="qizhige-entry-title" class="section-heading__title">器物图像、视听叙事与媒体索引的展开页</h2>
+      </div>
+      <p class="qizhige-entry__text">
+        将视频资源、主流媒体文章与图片资源汇为同一知识板块，以卷轴式结构展开器物的形制、传播与视觉记忆。
+      </p>
+
+      <div class="qizhige-entry__preview">
+        <a class="qizhige-entry__preview-card" href="/qizhige#qizhige-videos-title">
+          <p class="qizhige-entry__preview-label">视频资源</p>
+          <h3 class="qizhige-entry__preview-title">
+            <%= homeFeaturedVideos[0] ? (homeFeaturedVideos[0].title_zh || homeFeaturedVideos[0].title_en) : '器物影像导览' %>
+          </h3>
+          <p class="qizhige-entry__preview-text">
+            从叙事影像中观看日晷、漏刻与天文机械的结构、环境与讲述方式。
+          </p>
+        </a>
+
+        <a class="qizhige-entry__preview-card" href="/qizhige#qizhige-articles-title">
+          <p class="qizhige-entry__preview-label">主流媒体文章</p>
+          <h3 class="qizhige-entry__preview-title">
+            <%= homeFeaturedArticles[0] ? homeFeaturedArticles[0].title : '古代科技文明报道索引' %>
+          </h3>
+          <p class="qizhige-entry__preview-text">
+            通过央视网、人民日报、新华社等来源追索时间文化的当代阐释。
+          </p>
+        </a>
+      </div>
+
+      <div class="qizhige-entry__actions">
+        <a class="button button--primary" href="/qizhige">进入器之格</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section featured-tools" aria-labelledby="featured-tools-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">重点器物</p>
+      <h2 id="featured-tools-title" class="section-heading__title">从日影、水声、星度中辨认时间之器</h2>
+    </div>
+
+    <div class="card-grid">
+      <% if (homeFeaturedTools.length) { %>
+        <% homeFeaturedTools.forEach((tool) => { %>
+          <article class="feature-card" data-href="/tools/<%= tool.id %>">
+            <div class="feature-card__image-wrap">
+              <img
+                class="feature-card__image"
+                src="<%= getToolImageById(tool.id) %>"
+                alt="<%= tool.name_zh || '计时工具' %>"
+              >
+              <div class="feature-card__glow"></div>
+            </div>
+            <div class="feature-card__meta">
+              <span><%= tool.dynasty || '朝代待补充' %></span>
+              <span><%= tool.category || '类别待补充' %></span>
+            </div>
+            <h3 class="feature-card__title">
+              <a href="/tools/<%= tool.id %>"><%= tool.name_zh %></a>
+            </h3>
+            <p class="feature-card__subtitle"><%= tool.name_en || '' %></p>
+            <p class="feature-card__text"><%= tool.introduction || '计时工具简介待补充。' %></p>
+            <div class="feature-card__link-row">
+              <a href="/tools/<%= tool.id %>">查看器物详情</a>
+            </div>
+          </article>
+        <% }) %>
+      <% } else { %>
+        <article class="feature-card feature-card--empty">
+          <h3 class="feature-card__title">重点器物数据待接入</h3>
+          <p class="feature-card__text">后续可由后端传入 `featuredTools` 数据。</p>
+        </article>
+      <% } %>
+    </div>
+  </section>
+</div>
+
+<%- include('partials/footer') %>

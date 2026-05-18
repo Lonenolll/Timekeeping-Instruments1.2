@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+<%
+  const articleList = Array.isArray(articles) ? articles : [];
+  const articleTools = Array.isArray(tools) ? tools : [];
+  const currentSelectedSource = typeof selectedSource !== 'undefined' ? selectedSource : '';
+  const currentSelectedToolId = typeof selectedToolId !== 'undefined' ? String(selectedToolId) : '';
+
+  const normalizedArticleTools = articleTools.map((tool) => ({
+    id: String(tool.id),
+    nameZh: tool.name_zh || tool.nameZh || tool.nameCn || '未命名器物'
+  }));
+
+  const findArticleToolName = (toolId) => {
+    const matchedTool = normalizedArticleTools.find((tool) => tool.id === String(toolId));
+    return matchedTool ? matchedTool.nameZh : '未关联器物';
+  };
+%>
+
+<section class="media-page media-page--articles" aria-labelledby="articles-page-title">
+  <header class="media-page__hero">
+    <a class="button button--ghost media-page__back" href="/qizhige#qizhige-articles-title">← 返回器之格</a>
+    <p class="media-page__eyebrow">媒体索引</p>
+    <h2 id="articles-page-title" class="media-page__title">中国古代计时文化主流媒体文章</h2>
+    <p class="media-page__subtitle">
+      汇集央视网、人民日报、新华社等主流媒体相关报道，从古代科技、天文历法、时间文化与器物文明等角度展开延伸阅读。
+    </p>
+  </header>
+
+  <div class="notice-panel">
+    本站仅展示文章索引信息与原文链接，不全文转载。
+  </div>
+
+  <section class="media-filter" aria-labelledby="articles-filter-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">检索筛选</p>
+      <h3 id="articles-filter-title" class="section-heading__title">按来源与器物浏览</h3>
+    </div>
+
+    <form class="filter-form" action="/articles" method="get">
+      <div class="filter-form__group">
+        <label for="article-source-filter">文章来源</label>
+        <select id="article-source-filter" name="source">
+          <option value="">全部来源</option>
+          <option value="央视网" <%= currentSelectedSource === '央视网' ? 'selected' : '' %>>央视网</option>
+          <option value="人民日报" <%= currentSelectedSource === '人民日报' ? 'selected' : '' %>>人民日报</option>
+          <option value="新华社" <%= currentSelectedSource === '新华社' ? 'selected' : '' %>>新华社</option>
+        </select>
+      </div>
+
+      <div class="filter-form__group">
+        <label for="article-tool-filter">计时工具</label>
+        <select id="article-tool-filter" name="toolId">
+          <option value="">全部工具</option>
+          <% normalizedArticleTools.forEach((tool) => { %>
+            <option value="<%= tool.id %>" <%= currentSelectedToolId === tool.id ? 'selected' : '' %>>
+              <%= tool.nameZh %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <button class="button button--primary" type="submit">应用筛选</button>
+    </form>
+  </section>
+
+  <section class="media-list-section" aria-label="文章列表">
+    <% if (articleList.length) { %>
+      <div class="list-block">
+        <% articleList.forEach((article) => { %>
+          <%
+            const articleToolId = article.timing_tool_id || article.timingToolId || article.toolId;
+            const articleToolName = article.tool_name_zh || article.toolNameZh || findArticleToolName(articleToolId);
+          %>
+          <article class="list-item article-list-item">
+            <h3 class="article-list-item__title"><%= article.title %></h3>
+            <p class="article-list-item__meta">
+              <span><%= article.source || '来源待补充' %></span>
+              <span><%= article.publish_date || article.publishDate || '日期待补充' %></span>
+              <span><%= articleToolName %></span>
+            </p>
+            <p class="article-list-item__summary"><%= article.summary || '后续将在这里展示文章摘要。' %></p>
+            <p class="article-list-item__link">
+              <a href="<%= article.article_url || article.url || '#' %>" target="_blank" rel="noopener noreferrer">查看原文链接</a>
+            </p>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="tool-detail-panel">
+        <p>当前筛选条件下暂无文章数据，后续可继续补充央视网、人民日报、新华社等媒体索引内容。</p>
+      </div>
+    <% } %>
+  </section>
+</section>
+
+<%- include('partials/footer') %>

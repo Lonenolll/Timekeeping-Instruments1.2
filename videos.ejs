@@ -1,0 +1,150 @@
+<%- include('partials/header') %>
+
+<%
+  const videoList = Array.isArray(videos) ? videos : [];
+  const toolList = Array.isArray(tools) ? tools : [];
+  const currentSelectedToolId = typeof selectedToolId !== 'undefined' ? String(selectedToolId) : '';
+  const currentSelectedLanguage = typeof selectedLanguage !== 'undefined' ? selectedLanguage : '';
+
+  const getToolImageById = (toolId) => {
+    const map = {
+      1: '/images/tools/sundial-cover.svg',
+      2: '/images/tools/bronze-clepsydra-cover.svg',
+      3: '/images/tools/water-clock-cover.svg',
+      4: '/images/tools/gnomon-cover.svg',
+      5: '/images/tools/astronomical-clock-tower-cover.svg',
+      6: '/images/tools/incense-clock-cover.svg',
+      7: '/images/tools/fire-clock-cover.svg',
+      8: '/images/tools/night-watch-drum-cover.svg',
+      9: '/images/tools/armillary-sphere-cover.svg',
+      10: '/images/tools/astronomical-clock-cover.svg'
+    };
+    return map[Number(toolId)] || '/images/site/video-placeholder.svg';
+  };
+
+  const getEmbedUrl = (rawUrl) => {
+    if (!rawUrl) return '';
+    if (rawUrl.includes('player.bilibili.com')) return rawUrl;
+    if (rawUrl.includes('bilibili.com/video/')) {
+      const match = rawUrl.match(/\/video\/(BV[a-zA-Z0-9]+)/);
+      return match ? `https://player.bilibili.com/player.html?bvid=${match[1]}&page=1` : '';
+    }
+    if (rawUrl.includes('youtube.com/watch')) {
+      const parsed = new URL(rawUrl);
+      const videoId = parsed.searchParams.get('v');
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+    }
+    if (rawUrl.includes('youtu.be/')) {
+      const parts = rawUrl.split('youtu.be/');
+      return parts[1] ? `https://www.youtube.com/embed/${parts[1]}` : '';
+    }
+    return '';
+  };
+
+  const normalizedTools = toolList.map((tool) => ({
+    id: String(tool.id),
+    nameZh: tool.name_zh || tool.nameZh || tool.nameCn || '未命名器物'
+  }));
+
+  const findToolName = (toolId) => {
+    const matchedTool = normalizedTools.find((tool) => tool.id === String(toolId));
+    return matchedTool ? matchedTool.nameZh : '未关联器物';
+  };
+%>
+
+<section class="media-page media-page--videos" aria-labelledby="videos-page-title">
+  <header class="media-page__hero">
+    <a class="button button--ghost media-page__back" href="/qizhige#qizhige-videos-title">← 返回器之格</a>
+    <h2 id="videos-page-title" class="media-page__title">视听资源：中国古代计时工具相关视频资源</h2>
+  </header>
+
+  <section class="media-filter" aria-labelledby="videos-filter-title">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">检索筛选</p>
+      <h3 id="videos-filter-title" class="section-heading__title">按器物与语言浏览</h3>
+    </div>
+
+    <form class="filter-form" action="/videos" method="get">
+      <div class="filter-form__group">
+        <label for="video-tool-filter">计时工具</label>
+        <select id="video-tool-filter" name="toolId">
+          <option value="">全部工具</option>
+          <% normalizedTools.forEach((tool) => { %>
+            <option value="<%= tool.id %>" <%= currentSelectedToolId === tool.id ? 'selected' : '' %>>
+              <%= tool.nameZh %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="filter-form__group">
+        <label for="video-language-filter">语言</label>
+        <select id="video-language-filter" name="language">
+          <option value="">全部语言</option>
+          <option value="中文" <%= currentSelectedLanguage === '中文' ? 'selected' : '' %>>中文</option>
+          <option value="英文" <%= currentSelectedLanguage === '英文' ? 'selected' : '' %>>英文</option>
+        </select>
+      </div>
+
+      <button class="button button--primary" type="submit">应用筛选</button>
+    </form>
+  </section>
+
+  <section class="media-grid-section" aria-label="视频资源列表">
+    <div class="card-grid card-grid--media">
+      <% if (videoList.length) { %>
+        <% videoList.forEach((video) => { %>
+          <%
+            const videoTitleZh = video.title_zh || video.titleZh || video.titleCn || '未命名视频';
+            const videoTitleEn = video.title_en || video.titleEn || 'Untitled Video';
+            const videoToolId = video.timing_tool_id || video.timingToolId || video.toolId;
+            const videoToolName = video.tool_name_zh || video.toolNameZh || findToolName(videoToolId);
+            const videoLanguage = video.language || '语言待补充';
+            const videoThumbnail = getToolImageById(videoToolId);
+            const videoDescription = video.description || '后续将在这里展示该视频的内容简介。';
+            const videoUrl = video.play_url || video.video_url || video.url || '#';
+            const embedUrl = getEmbedUrl(videoUrl);
+            const isDirectVideo = /\.(mp4|webm|ogg)(\?.*)?$/i.test(videoUrl);
+          %>
+          <article class="feature-card feature-card--media">
+            <div class="feature-card__image-wrap">
+              <% if (embedUrl) { %>
+                <iframe
+                  class="feature-card__iframe"
+                  src="<%= embedUrl %>"
+                  title="<%= videoTitleZh %>"
+                  loading="lazy"
+                  allowfullscreen
+                ></iframe>
+              <% } else if (isDirectVideo) { %>
+                <video class="feature-card__video" controls poster="<%= videoThumbnail %>">
+                  <source src="<%= videoUrl %>">
+                  您的浏览器暂不支持 video 标签。
+                </video>
+              <% } else { %>
+                <img class="feature-card__image" src="<%= videoThumbnail %>" alt="<%= videoTitleZh %>">
+              <% } %>
+            </div>
+            <p class="feature-card__meta">
+              <span><%= videoLanguage %></span>
+              <span><%= videoToolName %></span>
+            </p>
+            <h3 class="feature-card__title"><%= videoTitleZh %></h3>
+            <p class="feature-card__subtitle"><%= videoTitleEn %></p>
+            <p class="feature-card__text"><%= videoDescription %></p>
+            <p class="feature-card__link-row">
+              <a href="<%= videoUrl %>" target="_blank" rel="noopener noreferrer">前往来源页观看</a>
+            </p>
+          </article>
+        <% }) %>
+      <% } else { %>
+        <article class="feature-card feature-card--empty">
+          <h3 class="feature-card__title">暂无视频资源</h3>
+          <p class="feature-card__text">当前筛选条件下没有匹配的视频，后续可继续补充不同计时工具的中英文讲解内容。</p>
+        </article>
+      <% } %>
+    </div>
+  </section>
+</section>
+
+<%- include('partials/footer') %>

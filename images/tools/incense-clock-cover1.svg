@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#0c1320"/>
+  <circle cx="600" cy="420" r="190" fill="none" stroke="#c9a760" stroke-width="8"/>
+  <path d="M600 260c80 30 110 90 84 144-22 48-92 54-118 104-28 56 16 102 86 126" fill="none" stroke="#f3ecdc" stroke-width="10" stroke-linecap="round"/>
+  <path d="M620 210c0-30 16-54 36-72" fill="none" stroke="#5c84c9" stroke-width="6"/>
+  <text x="600" y="120" fill="#f3ecdc" font-size="58" text-anchor="middle" font-family="serif">香篆钟</text>
+  <text x="600" y="180" fill="#c9a760" font-size="30" text-anchor="middle" font-family="serif">Incense Clock</text>
+</svg>

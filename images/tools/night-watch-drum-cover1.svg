@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#09111d"/>
+  <circle cx="600" cy="410" r="170" fill="#8a3d34" stroke="#c9a760" stroke-width="12"/>
+  <circle cx="600" cy="410" r="120" fill="none" stroke="#f3ecdc" stroke-width="8"/>
+  <line x1="780" y1="250" x2="700" y2="340" stroke="#5c84c9" stroke-width="12"/>
+  <circle cx="690" cy="350" r="18" fill="#f3ecdc"/>
+  <text x="600" y="130" fill="#f3ecdc" font-size="58" text-anchor="middle" font-family="serif">更鼓</text>
+  <text x="600" y="190" fill="#c9a760" font-size="32" text-anchor="middle" font-family="serif">Night Watch Drum</text>
+</svg>
